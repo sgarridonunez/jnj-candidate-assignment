@@ -7,8 +7,15 @@ I chose a manufacturing dataset because the role is in MSAT Process Analytics, s
 
 ```bash
 python3 -m pip install -r requirements.txt
-python3 "main.py"
+
+# Fastest way to reproduce the exact delivered output
+python3 main.py --no-refresh-data
+
+# Optional: refresh directly from CBS and regenerate
+python3 main.py --refresh-data
 ```
+
+`--no-refresh-data` reproduces the result from the included CSV; `--refresh-data` re-downloads the source data from CBS and rebuilds the outputs.
 
 ## Files
 
@@ -28,18 +35,23 @@ When `main.py` starts, it checks whether the required packages are installed and
 
 ## How To Run
 
-The main analysis workflow is:
+You can run the workflow in two reproducible ways.
+
+Option 1: reproduce the delivered result from the included CSV
 
 ```bash
-python3 "main.py"
+python3 main.py --no-refresh-data
 ```
 
-This will:
+This reuses `cbs_manufacturing_monthly.csv`, runs the data-quality checks, creates one benchmark chart, and saves the text outputs.
 
-1. refresh the monthly CBS download
-2. run simple data-quality checks
-3. create one benchmark chart
-4. save a short factual summary
+Option 2: refresh the source data from CBS and rebuild everything
+
+```bash
+python3 main.py --refresh-data
+```
+
+This downloads a fresh monthly CSV from the CBS OData API first, then runs the same analysis workflow.
 
 You can choose the chart frequency in two ways.
 

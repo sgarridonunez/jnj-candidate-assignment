@@ -20,7 +20,7 @@ python3 main.py --refresh-data
 ## Files
 
 - `cbs_manufacturing_download.py`: pulls the selected monthly CBS series from the OData API for pharmaceuticals, chemicals, and total manufacturing, then writes them to a local CSV
-- `main.py`: main entry point that optionally refreshes the download, runs simple data-quality checks, aggregates to monthly, quarterly, or annual views, and creates the final chart and text outputs
+- `main.py`: main entry point that optionally refreshes the download, runs simple data-quality checks, aggregates to monthly, quarterly, or annual views, and creates the final plot and text outputs
 - `cbs_manufacturing_monthly.csv`: the local monthly dataset produced by the downloader and used as the input for the analysis script
 - `requirements.txt`: lists the Python packages needed to run the downloader and analysis workflow.
 
@@ -44,7 +44,7 @@ Option 1: reproduce the delivered result from the included CSV
 python3 main.py --no-refresh-data
 ```
 
-This reuses `cbs_manufacturing_monthly.csv`, runs the data-quality checks, creates one benchmark chart, and saves the text outputs.
+This reuses `cbs_manufacturing_monthly.csv`, runs the data-quality checks, runs analysis, and saves the text outputs.
 
 Option 2: refresh the source data from CBS and rebuild everything
 
@@ -54,7 +54,7 @@ python3 main.py --refresh-data
 
 This downloads a fresh monthly CSV from the CBS OData API first, then runs the same analysis workflow.
 
-You can choose the chart frequency in two ways.
+You can choose the plot frequency in two ways.
 
 Option 1: edit the file directly
 

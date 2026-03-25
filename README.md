@@ -22,6 +22,7 @@ python3 main.py --refresh-data
 - `cbs_manufacturing_download.py`: pulls the selected monthly CBS series from the OData API for pharmaceuticals, chemicals, and total manufacturing, then writes them to a local CSV
 - `main.py`: main entry point that optionally refreshes the download, runs simple data-quality checks, aggregates to monthly, quarterly, or annual views, and creates the final chart and text outputs
 - `cbs_manufacturing_monthly.csv`: the local monthly dataset produced by the downloader and used as the input for the analysis script
+- `requirements.txt`: lists the Python packages needed to run the downloader and analysis workflow.
 
 ## Environment Setup
 

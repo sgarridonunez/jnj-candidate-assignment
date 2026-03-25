@@ -1,0 +1,5 @@
+Simple benchmark summary (monthly data):
+- Reporting frequency: monthly
+- Pharmaceuticals: start 88.3, latest 105.2, change +16.9, average YoY +5.1%
+- Chemicals: start 99.0, latest 76.3, change -22.7, average YoY -3.2%
+- Total manufacturing: start 97.6, latest 104.5, change +6.9, average YoY +2.4%

@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+~$assignment.pptx
+assignment.pptx
+Candidate Assignment for Sr Assoc Scientist.pdf
+build_slide.py
+outputs/pharma_vs_benchmarks_quarterly.png
+outputs/slide_metrics.json
+outputs/slide_metrics.txt

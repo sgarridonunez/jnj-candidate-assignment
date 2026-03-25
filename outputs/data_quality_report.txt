@@ -1,0 +1,6 @@
+Data quality checks passed:
+- Pharmaceuticals: 61 monthly observations
+- Chemicals: 61 monthly observations
+- Total manufacturing: 61 monthly observations
+- No duplicate branch/period rows
+- No missing values in the selected metrics

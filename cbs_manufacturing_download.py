@@ -44,17 +44,6 @@ OUTPUT_COLUMNS = [
     "previous_period_seasonally_adjusted_production_change",
 ]
 
-
-class StartFilter:
-    def __init__(self, year, month):
-        self.year = year
-        self.month = month
-
-    @property
-    def period_key(self):
-        return f"{self.year:04d}MM{self.month:02d}"
-
-
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Download monthly CBS manufacturing data for selected benchmarks."
@@ -89,13 +78,13 @@ def parse_args():
 
 def parse_start_filter(raw_value):
     if re.fullmatch(r"\d{4}", raw_value):
-        return StartFilter(year=int(raw_value), month=1)
+        return f"{int(raw_value):04d}MM01"
     if re.fullmatch(r"\d{4}-\d{2}", raw_value):
         year_str, month_str = raw_value.split("-")
         year = int(year_str)
         month = int(month_str)
         if 1 <= month <= 12:
-            return StartFilter(year=year, month=month)
+            return f"{year:04d}MM{month:02d}"
     raise ValueError("Expected --start in YYYY or YYYY-MM format.")
 
 
@@ -151,7 +140,7 @@ def transform_rows(
         period_key = item["Perioden"]
         if not is_monthly_period(period_key):
             continue
-        if start_filter and period_key < start_filter.period_key:
+        if start_filter and period_key < start_filter:
             continue
 
         code = item["BedrijfstakkenBranchesSBI2008"]

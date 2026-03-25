@@ -13,9 +13,9 @@ python3 "main.py"
 
 ## Files
 
-- `cbs_manufacturing_download.py`: downloads the selected CBS data
-- `main.py`: main analysis entry point that checks data quality and creates analysis plot/data
-- `cbs_manufacturing_monthly.csv`: downloaded monthly dataset
+- `cbs_manufacturing_download.py`: pulls the selected monthly CBS series from the OData API for pharmaceuticals, chemicals, and total manufacturing, then writes them to a local CSV
+- `main.py`: main entry point that optionally refreshes the download, runs simple data-quality checks, aggregates to monthly, quarterly, or annual views, and creates the final chart and text outputs
+- `cbs_manufacturing_monthly.csv`: the local monthly dataset produced by the downloader and used as the input for the analysis script
 
 ## Environment Setup
 

@@ -4,6 +4,13 @@ This project analyzes the question: **Has pharmaceutical manufacturing pulled aw
 
 I chose a manufacturing dataset because the role is in MSAT Process Analytics, so the analysis stays close to production performance and stability. Pharmaceuticals are compared with chemicals and total manufacturing because chemicals is the closest process-industry peer, while total manufacturing provides broader context; this also connects to concerns around pharmaceutical supply-chain resilience, APIs, and raw materials highlighted by the European Commission ([link](https://health.ec.europa.eu/medicinal-products/legal-framework-governing-medicinal-products-human-use-eu/pharmaceutical-strategy-europe/structured-dialogue-security-medicines-supply_en)). I used monthly seasonally adjusted production index data to preserve visibility of volatility, kept 2021 as the reference year because CBS publishes the series with `2021 = 100`, and used 2023 as the split because the exploratory analysis showed a persistent divergence beginning then. This is consistent with CBS reporting that Dutch industry weakened after 2022 and that chemicals were especially affected by weaker demand and high energy costs ([link](https://www.cbs.nl/nl-nl/longread/de-nederlandse-economie/2025/de-nederlandse-industrie-vanaf-2022/3-industrie-in-een-kwakkelende-economie-2022-2024)). The main insight is that pharma stayed mostly above its 2021 average while chemicals moved into sustained underperformance. The average pharma-chemicals gap widened from `+7.3` to `+26.2` index points; pharma stayed highly volatile (`SD 12.6`), while chemicals became less volatile (`SD 4.6` to `3.1`). The practical takeaway is that benchmarking should track both production level and stability, because stronger average performance can still come with less stable month-to-month behavior.
 
+## Quick Start
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 "main.py"
+```
+
 ## Files
 
 - `cbs_manufacturing_download.py`: downloads the selected CBS data
@@ -15,7 +22,7 @@ I chose a manufacturing dataset because the role is in MSAT Process Analytics, s
 Use Python 3 and install the required analysis packages:
 
 ```bash
-python3 -m pip install pandas numpy matplotlib
+python3 -m pip install -r requirements.txt
 ```
 
 When `main.py` starts, it checks whether the required packages are installed and exits with a clear install message if something is missing.

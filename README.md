@@ -71,13 +71,6 @@ python3 "main.py" --time-level quarterly
 python3 "main.py" --time-level annual
 ```
 
-You can also control whether the script downloads fresh data:
-
-```bash
-python3 "main.py" --refresh-data
-python3 "main.py" --no-refresh-data
-```
-
 Supported `TIME_LEVEL` values are:
 
 - `monthly` (default)
@@ -85,8 +78,6 @@ Supported `TIME_LEVEL` values are:
 - `annual`
 
 The data is always downloaded monthly first. Quarterly and annual views are simple averages aggregated from the monthly data inside `main.py`.
-
-`REFRESH_DATA` controls whether `main.py` downloads a fresh copy of the CBS data before running the analysis. Keep it as `True` if you want the script to refresh the monthly CSV automatically; set it to `False` if you want to reuse the existing local file. You can also override this from the command line with `--refresh-data` or `--no-refresh-data`.
 
 The simple data-quality checks include:
 

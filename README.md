@@ -98,6 +98,14 @@ The code accesses the CBS OData API through `cbs_manufacturing_download.py`, dow
 
 and saves the results to `cbs_manufacturing_monthly.csv`. The analysis then reads that monthly file and optionally aggregates it to quarterly or annual frequency inside `main.py`.
 
+The downloaded dataset includes three production-related measures:
+
+- `seasonally_adjusted_production`
+- `calendar_corrected_production_change_year_on_year`
+- `previous_period_seasonally_adjusted_production_change`
+
+The main analysis uses `seasonally_adjusted_production`, because it is the most suitable series for benchmarking sector performance over time while preserving visibility of month-to-month volatility. The other two variables were downloaded as supporting measures, but the final slide stays focused on the seasonally adjusted production index for clarity.
+
 ## Outputs
 
 After running `main.py`, the main outputs are saved in `outputs/`:

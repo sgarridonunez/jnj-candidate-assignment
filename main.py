@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Simple analysis for the J&J CBS manufacturing assignment."""
 
 import argparse
 from pathlib import Path
@@ -58,6 +57,7 @@ COLORS = {
     "chemicals": "#1f77b4",
     "total_manufacturing": "#555555",
 }
+CHART_TITLE = "Seasonally adjusted production index"
 
 
 def parse_args():
@@ -204,22 +204,13 @@ def prepare_analysis_data(df, time_level):
     if time_level == "monthly":
         return df.copy()
 
-    if time_level == "quarterly":
+    period_map = {
+        "quarterly": "Q",
+        "annual": "Y",
+    }
+    if time_level in period_map:
         return (
-            df.assign(period=df["period"].dt.to_period("Q").dt.start_time)
-            .groupby(["industry_branch", "period"], as_index=False)
-            .agg(
-                {
-                    "seasonally_adjusted_production": "mean",
-                    "calendar_corrected_production_change_year_on_year": "mean",
-                    "previous_period_seasonally_adjusted_production_change": "mean",
-                }
-            )
-        )
-
-    if time_level == "annual":
-        return (
-            df.assign(period=df["period"].dt.to_period("Y").dt.start_time)
+            df.assign(period=df["period"].dt.to_period(period_map[time_level]).dt.start_time)
             .groupby(["industry_branch", "period"], as_index=False)
             .agg(
                 {
@@ -269,7 +260,7 @@ def build_chart_subtitle(time_level):
 
 
 def build_chart_title():
-    return "Seasonally adjusted production index"
+    return CHART_TITLE
 
 
 def build_split_stats_table(df):
@@ -298,13 +289,14 @@ def build_split_stats_table(df):
     return rows
 
 
-def create_chart(df, path, title, subtitle, stats_source_df):
+def create_chart(df, path, title, subtitle, stats_source_df, time_level):
     try:
         plt.style.use("seaborn-whitegrid")
     except OSError:
         plt.style.use("default")
 
-    fig, ax = plt.subplots(figsize=(10, 6))
+    figure_height = 6.8 if time_level in {"quarterly", "annual"} else 6
+    fig, ax = plt.subplots(figsize=(10, figure_height))
     ax.grid(True, alpha=0.20, linewidth=0.6)
 
     for branch in EXPECTED_BRANCHES:
@@ -320,6 +312,10 @@ def create_chart(df, path, title, subtitle, stats_source_df):
         )
 
     ax.axhline(100, color="black", linestyle="--", linewidth=1, alpha=0.7)
+    if time_level in {"quarterly", "annual"}:
+        # Leave extra headroom so the stats box stays clear of the lines.
+        _, y_max = ax.get_ylim()
+        ax.set_ylim(top=y_max + 10)
     ax.set_title(title + "\n" + subtitle, fontsize=13)
     ax.set_ylabel("Production index (2021=100)")
     ax.set_xlabel("")
@@ -412,6 +408,7 @@ def main():
         build_chart_title(),
         build_chart_subtitle(time_level),
         df,
+        time_level,
     )
     save_text(quality_lines, quality_path)
     save_text(summary_lines, summary_path)

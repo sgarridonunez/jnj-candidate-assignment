@@ -104,4 +104,4 @@ After running `main.py`, the main outputs are saved in `outputs/`:
 
 - `pharma_vs_benchmarks.png` - the plot used for the presentation
 - `data_quality_report.txt` - a short data-check report covering branch coverage, duplicates, missing values, and monthly continuity in the downloaded data
-- `analysis_summary.txt` - a short factual summary with reporting frequency plus start, latest, change, and average YoY values for each sector
+- `analysis_summary.txt` - a supporting summary with period means and Std. Dev. for each sector plus pairwise benchmark gaps, using CBS production indexes where `2021 = 100`

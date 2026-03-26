@@ -224,20 +224,76 @@ def prepare_analysis_data(df, time_level):
     raise ValueError('time_level must be "monthly", "quarterly", or "annual".')
 
 
-def build_summary_lines(df, time_level):
-    summary_lines = [f"Simple benchmark summary ({time_level} data):"]
+def build_split_stats(df):
+    periods = {
+        "2021-2022": [2021, 2022],
+        "2023-2025": [2023, 2024, 2025],
+    }
+    stats = {}
 
     for branch in EXPECTED_BRANCHES:
-        branch_df = df[df["industry_branch"] == branch].sort_values("period")
-        start_value = branch_df["seasonally_adjusted_production"].iloc[0]
-        latest_value = branch_df["seasonally_adjusted_production"].iloc[-1]
-        average_yoy = np.nanmean(
-            branch_df["calendar_corrected_production_change_year_on_year"]
+        branch_df = df[df["industry_branch"] == branch]
+        stats[branch] = {}
+        for period_label, years in periods.items():
+            period_df = branch_df[branch_df["period"].dt.year.isin(years)]
+            stats[branch][period_label] = {
+                "mean": period_df["seasonally_adjusted_production"].mean(),
+                "std": np.std(period_df["seasonally_adjusted_production"], ddof=0),
+            }
+
+    return stats
+
+
+def to_display_value(value):
+    return float(f"{value:.1f}")
+
+
+def build_summary_lines(df):
+    stats = build_split_stats(df)
+    summary_lines = [
+        "Supporting benchmark summary (monthly source data; 2026 excluded from period comparisons):",
+        "",
+        "All values are production indexes from CBS dataset 85806NED, where each sector has 2021 = 100.",
+        "Sector statistics below show the same period means and Std. Dev. used in the chart box.",
+        "",
+        "Sector means and volatility:",
+    ]
+
+    for branch in EXPECTED_BRANCHES:
+        early = stats[branch]["2021-2022"]
+        late = stats[branch]["2023-2025"]
+        summary_lines.append(
+            f"- {DISPLAY_NAMES[branch]}: 2021-2022 mean {to_display_value(early['mean']):.1f}, "
+            f"Std. Dev. {to_display_value(early['std']):.1f}; "
+            f"2023-2025 mean {to_display_value(late['mean']):.1f}, Std. Dev. {to_display_value(late['std']):.1f}"
         )
 
+    summary_lines.extend(
+        [
+            "",
+            "Pairwise mean gaps:",
+            "- Gap values are first sector minus second sector.",
+        ]
+    )
+
+    comparisons = [
+        ("pharma", "chemicals"),
+        ("pharma", "total_manufacturing"),
+        ("chemicals", "total_manufacturing"),
+    ]
+    for left_branch, right_branch in comparisons:
+        early_gap = to_display_value(
+            to_display_value(stats[left_branch]["2021-2022"]["mean"])
+            - to_display_value(stats[right_branch]["2021-2022"]["mean"])
+        )
+        late_gap = to_display_value(
+            to_display_value(stats[left_branch]["2023-2025"]["mean"])
+            - to_display_value(stats[right_branch]["2023-2025"]["mean"])
+        )
         summary_lines.append(
-            f"- {DISPLAY_NAMES[branch]}: start {start_value:.1f}, latest {latest_value:.1f}, "
-            f"change {latest_value - start_value:+.1f}, average YoY {average_yoy:+.1f}%"
+            f"- {DISPLAY_NAMES[left_branch]} - {DISPLAY_NAMES[right_branch]} mean gap: "
+            f"2021-2022 {early_gap:+.1f}, 2023-2025 {late_gap:+.1f}, "
+            f"change {to_display_value(late_gap - early_gap):+.1f}"
         )
 
     return summary_lines
@@ -269,20 +325,18 @@ def build_split_stats_table(df):
         "chemicals": "Chemicals",
         "total_manufacturing": "Total manufacturing",
     }
+    stats = build_split_stats(df)
     rows = []
 
     for branch in EXPECTED_BRANCHES:
-        branch_df = df[df["industry_branch"] == branch]
-        early_df = branch_df[branch_df["period"].dt.year.isin([2021, 2022])]
-        late_df = branch_df[branch_df["period"].dt.year.isin([2023, 2024, 2025])]
+        early = stats[branch]["2021-2022"]
+        late = stats[branch]["2023-2025"]
 
         rows.append(
             [
                 labels[branch],
-                f"{early_df['seasonally_adjusted_production'].mean():>5.1f} | "
-                f"{np.std(early_df['seasonally_adjusted_production'], ddof=0):>4.1f}",
-                f"{late_df['seasonally_adjusted_production'].mean():>5.1f} | "
-                f"{np.std(late_df['seasonally_adjusted_production'], ddof=0):>4.1f}",
+                f"{early['mean']:>5.1f} | {early['std']:>4.1f}",
+                f"{late['mean']:>5.1f} | {late['std']:>4.1f}",
             ]
         )
 
@@ -394,8 +448,7 @@ def main():
     df = load_data(INPUT_FILE)
     quality_lines = run_quality_checks(df)
     analysis_df = prepare_analysis_data(df, time_level)
-    summary_lines = build_summary_lines(analysis_df, time_level)
-    summary_lines.insert(1, f"- Reporting frequency: {time_level}")
+    summary_lines = build_summary_lines(df)
 
     output_folder = Path(OUTPUT_FOLDER)
     chart_path = output_folder / OUTPUT_CHART

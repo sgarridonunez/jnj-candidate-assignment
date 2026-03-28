@@ -26,6 +26,7 @@ DATASET_ID = "85806NED"
 BASE_URL = f"https://opendata.cbs.nl/ODataApi/OData/{DATASET_ID}"
 MONTHLY_PERIOD_RE = re.compile(r"^\d{4}MM\d{2}$")
 
+# CBS branch codes from the dataset's BedrijfstakkenBranchesSBI2008 dimension.
 DEFAULT_BENCHMARKS = {
     "pharma": "323200",
     "chemicals": "320700",
